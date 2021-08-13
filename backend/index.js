@@ -1,23 +1,30 @@
 const express = require("express");
 const mongoose = require("mongoose");
+var colors = require("colors");
 const dotenv = require("dotenv");
+const pinRoutes = require("./routes/pins");
+const userRoutes=require('./routes/users')
+
 const app = express();
-const pinRoute = require("./routes/pins");
-const userRoute = require("./routes/users");
 
 dotenv.config();
 app.use(express.json());
 
 mongoose
-  .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("Mongo db połączone");
+  .connect(process.env.MONGO_DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   })
-  .catch((err) => console.log(err));
+  .then(() => {
+    console.log("Mongo DB połączone".underline.yellow);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
-app.use("/api/pins", pinRoute);
-app.use("/api/users", userRoute);
+app.use("/api/pins", pinRoutes);
+app.use('/api/users', userRoutes)
 
 app.listen(8800, () => {
-  console.log("Backend is runninggg :)");
+  console.log("Serwer działa na porcie 8800".underline.blue);
 });
